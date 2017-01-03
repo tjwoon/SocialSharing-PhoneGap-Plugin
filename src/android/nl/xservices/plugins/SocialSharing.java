@@ -50,6 +50,8 @@ public class SocialSharing extends CordovaPlugin {
   private static final String ACTION_SHARE_VIA_SMS_EVENT = "shareViaSMS";
   private static final String ACTION_SHARE_VIA_EMAIL_EVENT = "shareViaEmail";
 
+  private static final String DEFAULT_FILE_SUFFIX = ".png";
+
   private static final int ACTIVITY_CODE_SEND__BOOLRESULT = 1;
   private static final int ACTIVITY_CODE_SEND__OBJECT = 2;
   private static final int ACTIVITY_CODE_SENDVIAEMAIL = 3;
@@ -715,12 +717,21 @@ public class SocialSharing extends CordovaPlugin {
       url = url.substring(0, url.length()-1);
     }
     final String pattern = ".*/([^?#]+)?";
+    final String suffixPattern = ".*/([^?#]+)?";
     Pattern r = Pattern.compile(pattern);
     Matcher m = r.matcher(url);
     if (m.find()) {
-      return m.group(1);
+      String filename = m.group(1);
+      Pattern rSuffix = Pattern.compile(suffixPattern);
+      Matcher mSuffix = rSuffix.matcher(filename);
+      if (mSuffix.find()) {
+          return filename;
+      } else {
+          return filename.concat(DEFAULT_FILE_SUFFIX);
+      }
     } else {
-      return "file";
+      String filename = "file";
+      return filename.concat(DEFAULT_FILE_SUFFIX);
     }
   }
 
